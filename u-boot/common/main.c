@@ -37,7 +37,9 @@ DECLARE_GLOBAL_DATA_PTR;
 extern int reset_button_status(void);
 extern void all_led_on(void);
 extern void all_led_off(void);
+#ifdef CONFIG_HTTPD
 extern int NetLoopHttpd(void);
+#endif
 
 #define MAX_DELAY_STOP_STR 32
 
@@ -212,11 +214,14 @@ void main_loop(void){
 		if(counter > 0){
 
 			// run web failsafe mode
+#ifdef CONFIG_HTTPD			
 			if(counter >= CONFIG_DELAY_TO_AUTORUN_HTTPD && counter < CONFIG_DELAY_TO_AUTORUN_CONSOLE){
 				printf("\n\nButton was pressed for %d sec...\nHTTP server is starting for firmware update...\n\n", counter);
 				NetLoopHttpd();
 				bootdelay = -1;
-			} else if(counter >= CONFIG_DELAY_TO_AUTORUN_CONSOLE && counter < CONFIG_DELAY_TO_AUTORUN_NETCONSOLE){
+			} else 
+#endif			
+			if(counter >= CONFIG_DELAY_TO_AUTORUN_CONSOLE && counter < CONFIG_DELAY_TO_AUTORUN_NETCONSOLE){
 				printf("\n\nButton was pressed for %d sec...\nStarting U-Boot console...\n\n", counter);
 				bootdelay = -1;
 			} else if(counter >= CONFIG_DELAY_TO_AUTORUN_NETCONSOLE){
@@ -243,8 +248,10 @@ void main_loop(void){
 #endif
 
 		// something goes wrong!
+#ifdef CONFIG_HTTPD			
 		printf("\n## Error: failed to execute 'bootcmd'!\nHTTP server is starting for firmware update...\n\n");
 		NetLoopHttpd();
+#endif
 	}
 #endif	/* CONFIG_BOOTDELAY */
 

@@ -107,7 +107,9 @@ int	webfailsafe_is_running = 0;
 int	webfailsafe_ready_for_upgrade = 0;
 int	webfailsafe_upgrade_type = WEBFAILSAFE_UPGRADE_TYPE_FIRMWARE;
 
+#ifdef CONFIG_HTTPD
 void NetReceiveHttpd(volatile uchar * inpkt, int len);
+#endif
 
 extern int do_reset(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 
@@ -757,10 +759,12 @@ void NetReceive(volatile uchar * inpkt, int len){
 	printf("Packet received\n");
 #endif
 
+#ifdef CONFIG_HTTPD
 	if(webfailsafe_is_running){
 		NetReceiveHttpd(inpkt, len);
 		return;
 	}
+#endif
 
 	NetRxPkt = inpkt;
 	NetRxPktLen = len;
@@ -1366,6 +1370,7 @@ ushort getenv_VLAN(char *var){
 /**********************************************************************************
  * HTTPD section
  */
+#ifdef CONFIG_HTTPD
 
 #define BUF	((struct uip_eth_hdr *)&uip_buf[0])
 
@@ -1589,3 +1594,4 @@ int NetLoopHttpd(void){
 
 	return(-1);
 }
+#endif

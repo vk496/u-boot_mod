@@ -129,7 +129,9 @@ LIBS += lib_$(ARCH)/lib$(ARCH).a
 LIBS += drivers/libdrivers.a
 LIBS += net/libnet.a
 LIBS += rtc/librtc.a
+ifndef DISABLE_HTTPD
 LIBS += httpd/libhttpd.a
+endif
 LIBS += $(BOARDLIBS)
 
 LIBS_SHARED = board/$(BOARDDIR)/lib$(BOARD).a 
@@ -344,6 +346,10 @@ endif
 
 	# don't show info about console (in, out, err...)
 	@echo "#define CFG_CONSOLE_INFO_QUIET"                 >> include/config.h
+
+ifndef DISABLE_HTTPD
+	@echo "#define CONFIG_HTTPD"			               >> include/config.h
+endif
 
 hornet_common_config : common_config
 	@echo "#define SOC_TYPE                QCA_AR933X_SOC" >> include/config.h

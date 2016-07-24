@@ -25,7 +25,10 @@ include $(TOPDIR)/config.mk
 
 LIB	= libnet.a
 
-OBJS = net.o tftp.o rarp.o eth.o bootp.o sntp.o httpd.o
+OBJS = net.o tftp.o rarp.o eth.o bootp.o sntp.o 
+ifndef DISABLE_HTTPD
+OBJS += httpd.o
+endif
 
 all:	$(LIB)
 
