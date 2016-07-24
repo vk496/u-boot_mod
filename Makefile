@@ -290,6 +290,17 @@ zsun_sd:
 	@cp $(BUILD_TOPDIR)/u-boot/u-boot.bin $(BUILD_TOPDIR)/bin/temp.bin
 	@make --no-print-directory show_size
 
+ng_nodedon:	export UBOOT_FILE_NAME=uboot_for_ng_nodedon
+ng_nodedon:	export CONFIG_MAX_UBOOT_SIZE_KB=123
+#ifndef CONFIG_SKIP_LOWLEVEL_INIT
+ng_nodedon:	export COMPRESSED_UBOOT=1
+#endif
+ng_nodedon:
+	@cd $(BUILD_TOPDIR)/u-boot/ && $(MAKECMD) ng_nodedon_config
+	@cd $(BUILD_TOPDIR)/u-boot/ && $(MAKECMD) ENDIANNESS=-EB V=1 all
+	@cp $(BUILD_TOPDIR)/u-boot/u-boot.bin $(BUILD_TOPDIR)/bin/temp.bin
+	@make --no-print-directory show_size
+
 ifdef CONFIG_SKIP_LOWLEVEL_INIT
   ifdef DISABLE_CONSOLE_OUTPUT
 show_size:	export UBOOT_FILE_NAME_SUFFIX=__SILENT-CONSOLE__RAM
