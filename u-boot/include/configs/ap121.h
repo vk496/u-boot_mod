@@ -198,6 +198,17 @@
 	#define CONFIG_QCA_GPIO_MASK_OUTPUTS_INIT_HI	(GPIO21 | GPIO18)
 	#define CONFIG_QCA_GPIO_MASK_OUTPUTS_INIT_LO	CONFIG_QCA_GPIO_MASK_LEDS_ACTIVE_HI
 
+#elif defined(CONFIG_FOR_NG_NODEDON)
+	/* LEDs */
+	#define CONFIG_QCA_GPIO_MASK_LEDS_ACTIVE_LO		GPIO27
+
+	/* Outputs, inputs */
+	#define CONFIG_QCA_GPIO_MASK_OUTPUTS			(CONFIG_QCA_GPIO_MASK_LEDS_ACTIVE_LO | GPIO8)
+	#define CONFIG_QCA_GPIO_MASK_INPUTS				GPIO11
+
+	/* Initial states */
+	#define CONFIG_QCA_GPIO_MASK_OUTPUTS_INIT_HI	(CONFIG_QCA_GPIO_MASK_LEDS_ACTIVE_LO | GPIO8)
+
 #endif
 
 /*
@@ -267,6 +278,10 @@
 
 	#define	CONFIG_BOOTARGS "console=ttySO,115200 root=31:02 rootfstype=squashfs init=/sbin/init mtdparts=ar7240-nor0:128k(u-boot),64k(u-boot-env),16128k(firmware),64k(ART)"
 
+#elif defined(CONFIG_FOR_NG_NODEDON)
+
+	#define	CONFIG_BOOTARGS "console=ttySO,115200 root=31:02 rootfstype=squashfs init=/sbin/init mtdparts=ar7240-nor0:128k(u-boot),64k(u-boot-env),16128k(firmware),64k(ART)"
+
 #endif
 
 /*
@@ -294,6 +309,9 @@
 #elif defined(CONFIG_FOR_ZSUN_SD)
 	#define	CFG_LOAD_ADDR			 0x9F030000
 	#define UPDATE_SCRIPT_FW_ADDR	"0x9F030000"      
+#elif defined(CONFIG_FOR_NG_NODEDON)
+	#define	CFG_LOAD_ADDR			 0x9F030000
+	#define UPDATE_SCRIPT_FW_ADDR	"0x9F030000"      
 #else
 	#define	CFG_LOAD_ADDR			 0x9F020000
 	#define UPDATE_SCRIPT_FW_ADDR	"0x9F020000"
@@ -310,6 +328,8 @@
 	#define CONFIG_BOOTCOMMAND "bootm 0x9F030000"
 #elif defined(CONFIG_FOR_ZSUN_SD)
     #define CONFIG_BOOTCOMMAND "bootm 0x9F030000"
+#elif defined(CONFIG_FOR_NG_NODEDON)
+    #define CONFIG_BOOTCOMMAND "bootm 0x9F030000"
 #else
 	#define CONFIG_BOOTCOMMAND "bootm 0x9F020000"
 #endif
@@ -320,6 +340,10 @@
 #if defined(CONFIG_FOR_DRAGINO_V2)
 	#define CONFIG_IPADDR		192.168.255.1
 	#define CONFIG_SERVERIP		192.168.255.2
+#elif defined(CONFIG_FOR_ZSUN_SD) || \
+ 	  defined(CONFIG_FOR_NG_NODEDON)
+	#define CONFIG_IPADDR		192.168.10.123
+	#define CONFIG_SERVERIP		192.168.10.105
 #else
 	#define CONFIG_IPADDR		192.168.1.1
 	#define CONFIG_SERVERIP		192.168.1.2
@@ -398,6 +422,10 @@
 	#define CFG_ENV_ADDR		0x9F020000
 	#define CFG_ENV_SIZE		0x8000
 	#define CFG_ENV_SECT_SIZE	0x10000
+#elif defined(CONFIG_FOR_NG_NODEDON)
+	#define CFG_ENV_ADDR		0x9F020000
+	#define CFG_ENV_SIZE		0x8000
+	#define CFG_ENV_SECT_SIZE	0x10000
 #else
 	#define CFG_ENV_ADDR		0x9F01EC00
 	#define CFG_ENV_SIZE		0x1000
@@ -424,7 +452,8 @@
       defined(CONFIG_FOR_DRAGINO_V2) || \
       defined(CONFIG_FOR_MESH_POTATO_V2) || \
       defined(CONFIG_FOR_BLACK_SWIFT_BOARD) || \
-      defined(CONFIG_FOR_ZSUN_SD)
+      defined(CONFIG_FOR_ZSUN_SD) || \
+      defined(CONFIG_FOR_NG_NODEDON)
 
 	#define CONFIG_COMMANDS (CFG_CMD_MEMORY | \
 							 CFG_CMD_DHCP   | \
@@ -493,6 +522,9 @@
 #elif defined(CONFIG_FOR_ZSUN_SD)
     #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES			"0x20000"
 	#define UPDATE_SCRIPT_UBOOT_BACKUP_SIZE_IN_BYTES	UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES
+#elif defined(CONFIG_FOR_NG_NODEDON)
+    #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES			"0x20000"
+	#define UPDATE_SCRIPT_UBOOT_BACKUP_SIZE_IN_BYTES	UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES
 #else
 	// TODO: should be == CONFIG_MAX_UBOOT_SIZE_KB
 	#define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES			"0x1EC00"
@@ -541,6 +573,9 @@
 	#define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES	(256 * 1024)
 #elif defined(CONFIG_FOR_ZSUN_SD)
     // ZSun SD: 128k(u-boot),64k(u-boot-env),...,64k(ART)
+    #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES	(256 * 1024)
+#elif defined(CONFIG_FOR_NG_NODEDON)
+    // NG Nodedon: 128k(u-boot),64k(u-boot-env),...,64k(ART)
     #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES	(256 * 1024)
 #else
 	// TP-Link: 64k(U-Boot),64k(MAC/model/WPS pin block),64k(ART)
@@ -634,6 +669,10 @@
 	#define OFFSET_MAC_DATA_BLOCK			0xFF0000
 	#define OFFSET_MAC_DATA_BLOCK_LENGTH	0x010000
 	#define OFFSET_MAC_ADDRESS				0x000000
+#elif defined(CONFIG_FOR_NG_NODEDON)
+	#define OFFSET_MAC_DATA_BLOCK			0xFF0000
+	#define OFFSET_MAC_DATA_BLOCK_LENGTH	0x010000
+	#define OFFSET_MAC_ADDRESS				0x000000      
 #else
 	#define OFFSET_MAC_DATA_BLOCK			0x010000
 	#define OFFSET_MAC_DATA_BLOCK_LENGTH	0x010000
@@ -647,7 +686,8 @@
 	!defined(CONFIG_FOR_MESH_POTATO_V2)      && \
 	!defined(CONFIG_FOR_GL_INET)             && \
 	!defined(CONFIG_FOR_BLACK_SWIFT_BOARD)   && \
-	!defined(CONFIG_FOR_ZSUN_SD)
+	!defined(CONFIG_FOR_ZSUN_SD)             && \
+	!defined(CONFIG_FOR_NG_NODEDON)
 #define OFFSET_ROUTER_MODEL					0x00FD00
 #endif
 
@@ -695,6 +735,7 @@
 	 */
 	#define CONFIG_QCA_PLL_IN_FLASH_BLOCK_OFFSET	0x00030000
 	#define CONFIG_QCA_PLL_IN_FLASH_BLOCK_SIZE		0x00010000
+
 #elif defined(CONFIG_FOR_ZSUN_SD)
 	/*
 	 * We will store PLL and CLOCK registers
@@ -703,6 +744,16 @@
 	 */
 	#define CONFIG_QCA_PLL_IN_FLASH_BLOCK_OFFSET	0x00010000
 	#define CONFIG_QCA_PLL_IN_FLASH_BLOCK_SIZE		0x00010000
+
+#elif defined(CONFIG_FOR_NG_NODEDON)
+	/*
+	 * We will store PLL and CLOCK registers
+	 * configuration at the end of environment
+	 * sector (64 KB, environment uses only half!)
+	 */
+	#define CONFIG_QCA_PLL_IN_FLASH_BLOCK_OFFSET	0x00010000
+	#define CONFIG_QCA_PLL_IN_FLASH_BLOCK_SIZE		0x00010000
+
 #else
 	/*
 	 * All TP-Link routers have a lot of unused space

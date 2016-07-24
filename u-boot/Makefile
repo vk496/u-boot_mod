@@ -658,6 +658,15 @@ zsun_sd_config : unconfig hornet_common_config
 
 	@./mkconfig -a ap121 mips mips ap121 ar7240 ar7240
 
+ng_nodedon_config : unconfig hornet_common_config
+	@echo '======= Configuring for NodeGarden Nodedon at:' `date` '======='
+	@echo "#define CONFIG_FOR_NG_NODEDON			   	1" >> include/config.h
+
+	@echo "#define CONFIG_DEFAULT_FLASH_SIZE_IN_MB     16" >> include/config.h
+	@echo "#define CONFIG_BOARD_CUSTOM_STRING          \"NodeGarden NODEDON v1\"" >> include/config.h
+
+	@./mkconfig -a ap121 mips mips ap121 ar7240 ar7240
+
 #########################################################################
 #########################################################################
 #########################################################################
