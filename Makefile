@@ -280,7 +280,7 @@ wallys_dr531:
 	@make --no-print-directory show_size
 
 zsun_sd:	export UBOOT_FILE_NAME=uboot_for_zsun_sd
-zsun_sd:	export CONFIG_MAX_UBOOT_SIZE_KB=123
+zsun_sd:	export CONFIG_MAX_UBOOT_SIZE_KB=64
 #ifndef CONFIG_SKIP_LOWLEVEL_INIT
 zsun_sd:	export COMPRESSED_UBOOT=1
 #endif

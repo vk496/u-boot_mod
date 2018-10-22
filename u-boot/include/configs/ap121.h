@@ -186,6 +186,18 @@
 	/* Initial states */
 	#define CONFIG_QCA_GPIO_MASK_OUTPUTS_INIT_LO	CONFIG_QCA_GPIO_MASK_LEDS_ACTIVE_HI
 
+#elif defined(CONFIG_FOR_ZSUN_SD)
+	/* LEDs */
+	#define CONFIG_QCA_GPIO_MASK_LEDS_ACTIVE_HI		GPIO0
+
+	/* Outputs, inputs */
+	#define CONFIG_QCA_GPIO_MASK_OUTPUTS			(CONFIG_QCA_GPIO_MASK_LEDS_ACTIVE_HI | GPIO21 | GPIO18)		// 21=USBSWITCH, 18=CARDREADER_RESET
+	#define CONFIG_QCA_GPIO_MASK_INPUTS				GPIO22														// 22=CARDDETECT
+
+	/* Initial states */
+	#define CONFIG_QCA_GPIO_MASK_OUTPUTS_INIT_HI	(GPIO21 | GPIO18)
+	#define CONFIG_QCA_GPIO_MASK_OUTPUTS_INIT_LO	CONFIG_QCA_GPIO_MASK_LEDS_ACTIVE_HI
+
 #endif
 
 /*
@@ -253,7 +265,7 @@
 
 #elif defined(CONFIG_FOR_ZSUN_SD)
 
-	#define	CONFIG_BOOTARGS "console=ttySO,115200 root=31:02 rootfstype=squashfs init=/sbin/init mtdparts=ar7240-nor0:128k(u-boot),64k(u-boot-env),16128k(firmware),64k(ART)"
+	#define	CONFIG_BOOTARGS "console=ttySO,115200 root=31:02 rootfstype=squashfs init=/sbin/init mtdparts=ar7240-nor0:64k(u-boot),64k(u-boot-env),16128k(firmware),64k(NVRAM),64k(ART)"
 
 #endif
 
@@ -279,9 +291,6 @@
 #elif defined(CONFIG_FOR_BLACK_SWIFT_BOARD)
 	#define	CFG_LOAD_ADDR			 0x9F030000
 	#define UPDATE_SCRIPT_FW_ADDR	"0x9F030000"
-#elif defined(CONFIG_FOR_ZSUN_SD)
-	#define	CFG_LOAD_ADDR			 0x9F030000
-	#define UPDATE_SCRIPT_FW_ADDR	"0x9F030000"      
 #else
 	#define	CFG_LOAD_ADDR			 0x9F020000
 	#define UPDATE_SCRIPT_FW_ADDR	"0x9F020000"
@@ -296,8 +305,6 @@
 	#define CONFIG_BOOTCOMMAND "bootm 0x9F040000"
 #elif defined(CONFIG_FOR_BLACK_SWIFT_BOARD)
 	#define CONFIG_BOOTCOMMAND "bootm 0x9F030000"
-#elif defined(CONFIG_FOR_ZSUN_SD)
-    #define CONFIG_BOOTCOMMAND "bootm 0x9F030000"
 #else
 	#define CONFIG_BOOTCOMMAND "bootm 0x9F020000"
 #endif
@@ -383,7 +390,7 @@
 	#define CFG_ENV_SIZE		0x8000
 	#define CFG_ENV_SECT_SIZE	0x10000
 #elif defined(CONFIG_FOR_ZSUN_SD)
-	#define CFG_ENV_ADDR		0x9F020000
+	#define CFG_ENV_ADDR		0x9F010000
 	#define CFG_ENV_SIZE		0x8000
 	#define CFG_ENV_SECT_SIZE	0x10000
 #else
@@ -411,8 +418,7 @@
 #elif defined(CONFIG_FOR_8DEVICES_CARAMBOLA2) || \
       defined(CONFIG_FOR_DRAGINO_V2) || \
       defined(CONFIG_FOR_MESH_POTATO_V2) || \
-      defined(CONFIG_FOR_BLACK_SWIFT_BOARD) || \
-      defined(CONFIG_FOR_ZSUN_SD)
+      defined(CONFIG_FOR_BLACK_SWIFT_BOARD)
 
 	#define CONFIG_COMMANDS (CFG_CMD_MEMORY | \
 							 CFG_CMD_DHCP   | \
@@ -429,7 +435,20 @@
 							 CFG_CMD_ENV    | \
 							 CFG_CMD_LOADB)
 
-#else
+ #elif defined(CONFIG_FOR_ZSUN_SD)
+
+ 	#define CONFIG_COMMANDS (CFG_CMD_MEMORY | \
+							 CFG_CMD_PING   | \
+							 CFG_CMD_FLASH  | \
+							 CFG_CMD_NET    | \
+							 CFG_CMD_RUN    | \
+							 CFG_CMD_DATE   | \
+							 CFG_CMD_ECHO   | \
+							 CFG_CMD_BOOTD  | \
+							 CFG_CMD_IMI    | \
+							 CFG_CMD_ENV)
+
+ #else
 
 	#define CONFIG_COMMANDS (CFG_CMD_MEMORY | \
 							 CFG_CMD_DHCP   | \
@@ -479,7 +498,7 @@
 	#define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES			"0x20000"
 	#define UPDATE_SCRIPT_UBOOT_BACKUP_SIZE_IN_BYTES	UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES
 #elif defined(CONFIG_FOR_ZSUN_SD)
-    #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES			"0x20000"
+    #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES			"0x10000"
 	#define UPDATE_SCRIPT_UBOOT_BACKUP_SIZE_IN_BYTES	UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES
 #else
 	// TODO: should be == CONFIG_MAX_UBOOT_SIZE_KB
@@ -498,7 +517,7 @@
 #elif defined(CONFIG_FOR_BLACK_SWIFT_BOARD)
 	#define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS			WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x30000
 #elif defined(CONFIG_FOR_ZSUN_SD)
-    #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS			WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x30000
+    #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS			WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x20000
 #else
 	#define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS			WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x20000
 #endif
@@ -528,7 +547,7 @@
 	// Black Swift board: 128k(U-Boot),64k(U-Boot env),64k(ART)
 	#define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES	(256 * 1024)
 #elif defined(CONFIG_FOR_ZSUN_SD)
-    // ZSun SD: 128k(u-boot),64k(u-boot-env),...,64k(ART)
+    // ZSun SD: 128k(u-boot),64k(u-boot-env),...,64k(NVRAM),64k(ART)
     #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES	(256 * 1024)
 #else
 	// TP-Link: 64k(U-Boot),64k(MAC/model/WPS pin block),64k(ART)
